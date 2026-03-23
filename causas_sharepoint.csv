@@ -1,0 +1,9 @@
+define([], function() {
+  return {
+    PropertyPaneDescription: 'Configuración de Guía de Atención',
+    BasicGroupName: 'Origen de datos',
+    ListNameFieldLabel: 'Nombre de la lista de SharePoint',
+    SiteUrlFieldLabel: 'URL del sitio (opcional; si queda vacío usa el sitio actual)',
+    FrameHeightFieldLabel: 'Alto del visor (px)'
+  };
+});
