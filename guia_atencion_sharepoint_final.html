@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guía de Atención — Call Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f0ede8;--surf:#fff;--surf2:#f7f4ef;--surf3:#ede9e2;
+  --border:#e0dbd2;--border2:#ccc7bc;
+  --txt:#1a1814;--txt2:#5a5650;--txt3:#9a9590;
+  --blue:#1456a0;--blue-bg:#e8f0fb;--blue-mid:#b8d0f0;
+  --green:#1e6e35;--green-bg:#e5f5ea;--green-mid:#9fd4b0;
+  --amber:#8a5200;--amber-bg:#fef3e0;--amber-mid:#f5d48a;
+  --red:#a81c1c;--red-bg:#fde8e8;
+  --teal:#0e6e6e;--teal-bg:#e0f4f4;
+  --r:10px;--r2:6px;--r3:4px;
+  --shadow:0 1px 3px rgba(0,0,0,.08);
+}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--txt);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── TOP NAV ── */
+.nav{height:50px;background:var(--blue);display:flex;align-items:center;padding:0 20px;gap:16px;position:sticky;top:0;z-index:100;box-shadow:0 1px 6px rgba(0,0,0,.2)}
+.nav-logo{color:#fff;font-size:15px;font-weight:600;letter-spacing:-.3px}
+.nav-spacer{flex:1}
+.nav-btn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:var(--r2);padding:5px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+.nav-btn:hover{background:rgba(255,255,255,.25)}
+
+/* ── MAIN LAYOUT ── */
+.app{display:flex;flex-direction:column;height:calc(100vh - 50px);overflow:hidden}
+
+/* ── TOP PANEL: datos + causa ── */
+.top-panel{background:var(--surf);border-bottom:1px solid var(--border);padding:14px 20px;flex-shrink:0}
+.top-row1{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;align-items:end;margin-bottom:10px}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:10px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{padding:7px 10px;border:1px solid var(--border2);border-radius:var(--r2);font-size:13px;background:var(--surf2);color:var(--txt);outline:none;font-family:inherit;transition:border .15s}
+.field input:focus,.field select:focus{border-color:var(--blue);background:var(--surf)}
+.field input::placeholder{color:var(--txt3)}
+.turno-group{display:flex;gap:6px}
+.turno-btn{padding:7px 12px;border:1px solid var(--border2);border-radius:var(--r2);font-size:12px;cursor:pointer;background:var(--surf2);color:var(--txt2);font-family:inherit;transition:all .15s}
+.turno-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* causa selector */
+.causa-row{display:flex;align-items:center;gap:10px}
+.causa-search-wrap{position:relative;flex:1}
+.causa-search-wrap input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--border2);border-radius:var(--r2);font-size:13px;background:var(--surf2);color:var(--txt);outline:none;font-family:inherit}
+.causa-search-wrap input:focus{border-color:var(--blue);background:var(--surf)}
+.causa-search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--txt3);pointer-events:none}
+.causa-selected{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--blue-bg);border:1px solid var(--blue-mid);border-radius:var(--r2);font-size:13px;color:var(--blue);font-weight:500;min-width:280px}
+.causa-selected .cs-clear{background:none;border:none;color:var(--blue);cursor:pointer;font-size:15px;line-height:1;margin-left:auto;padding:0 2px;opacity:.7}
+.causa-selected .cs-clear:hover{opacity:1}
+.causa-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;flex-shrink:0}
+.cb-Reclamo{background:var(--red-bg);color:var(--red)}
+.cb-Solicitud{background:var(--blue-bg);color:var(--blue)}
+.cb-Consulta{background:var(--amber-bg);color:var(--amber)}
+.cb-Sugerencia{background:var(--green-bg);color:var(--green)}
+.cb-Felicitación,.cb-Felicitacion{background:#f3e8ff;color:#6b21a8}
+
+/* causa dropdown */
+.causa-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--surf);border:1px solid var(--border2);border-radius:var(--r);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:200;max-height:420px;overflow-y:auto;display:none}
+.causa-dropdown.open{display:block}
+.cd-section{padding:8px 0 4px}
+.cd-section-label{padding:4px 14px;font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.5px;display:flex;align-items:center;gap:6px}
+.cd-section-label .star{color:#f5a623;font-size:12px}
+.cd-item{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--txt2);display:flex;align-items:center;gap:8px;border-left:2px solid transparent}
+.cd-item:hover{background:var(--surf2);color:var(--txt);border-left-color:var(--blue)}
+.cd-item .cd-fam{font-size:10px;color:var(--txt3);margin-left:auto;max-width:140px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-divider{height:1px;background:var(--border);margin:4px 0}
+
+/* preview bar */
+.preview-bar{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--teal-bg);border-radius:var(--r2);font-size:12px;color:var(--teal);border-left:3px solid var(--teal)}
+.preview-bar strong{font-weight:600}
+
+/* ── SPLIT BODY ── */
+.split-body{display:grid;grid-template-columns:420px 1fr;flex:1;overflow:hidden}
+
+/* ── LEFT: conditions + flow ── */
+.left-panel{background:var(--surf);border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column}
+.left-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:var(--txt3);text-align:center;padding:40px;gap:8px}
+.left-empty h3{font-size:15px;color:var(--txt2)}
+.left-steps{padding:12px}
+
+/* step card */
+.step-card{border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+.step-card-hdr{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surf2);cursor:pointer;user-select:none;transition:background .15s}
+.step-card-hdr:hover{background:var(--surf3)}
+.step-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;transition:all .2s}
+.sn-default{background:var(--border);color:var(--txt2)}
+.sn-done{background:var(--green);color:#fff}
+.sn-active{background:var(--blue);color:#fff}
+.step-title{font-size:12px;font-weight:600;flex:1;color:var(--txt2)}
+.step-card.active .step-title{color:var(--txt)}
+.step-done-tag{font-size:10px;color:var(--green);font-weight:600}
+.step-chevron{font-size:10px;color:var(--txt3);transition:transform .2s}
+.step-card.collapsed .step-chevron{transform:rotate(-90deg)}
+.step-body{padding:12px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:6px}
+.step-card.collapsed .step-body{display:none}
+.step-next-btn{margin-top:4px;padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:var(--r2);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:5px;width:fit-content}
+.step-next-btn:hover{background:#0e3d77}
+
+/* cause step special */
+.step-causa-placeholder{padding:12px;background:var(--surf2);border-radius:var(--r2);font-size:12px;color:var(--txt3);text-align:center;border:1px dashed var(--border2)}
+
+/* ── RIGHT: scripts panel ── */
+.right-panel{overflow-y:auto;background:var(--bg);padding:16px}
+.right-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--txt3);text-align:center;gap:8px}
+.right-empty h3{font-size:15px;color:var(--txt2)}
+.script-stream{display:flex;flex-direction:column;gap:8px}
+
+/* blocks */
+.blk-instr{background:var(--amber-bg);border:1px solid var(--amber-mid);border-radius:var(--r2);padding:10px 13px}
+.blk-instr-lbl{font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
+.blk-instr-txt{font-size:13px;color:#5a3a00;white-space:pre-wrap;line-height:1.6}
+.blk-client{background:var(--blue-bg);border:1px solid var(--blue-mid);border-radius:var(--r2);padding:10px 13px}
+.blk-client-lbl{font-size:10px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;display:flex;align-items:center;justify-content:space-between}
+.blk-client-txt{font-size:13px;color:#0a2d5a;white-space:pre-wrap;line-height:1.6;font-family:'DM Mono',monospace}
+.copy-btn{background:none;border:1px solid currentColor;border-radius:3px;padding:1px 7px;font-size:10px;cursor:pointer;opacity:.6;font-family:inherit}
+.copy-btn:hover{opacity:1}
+.copy-btn.ok{opacity:1;background:var(--green-bg);border-color:var(--green);color:var(--green)}
+
+/* step label in right panel */
+.right-step-label{display:flex;align-items:center;gap:8px;padding:8px 0 4px;margin-top:8px}
+.rsl-num{width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rsl-num.done{background:var(--green)}
+.rsl-title{font-size:11px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.4px}
+.right-divider{height:1px;background:var(--border);margin:6px 0}
+
+/* cond section */
+.cond-hdr{padding:7px 11px;background:var(--surf3);border-radius:var(--r2);margin-bottom:4px;font-size:11px;font-weight:700;color:var(--txt2);display:flex;align-items:center;gap:6px}
+.cond-tag{font-size:10px;padding:1px 6px;border-radius:10px;background:var(--amber-bg);color:var(--amber);font-weight:700}
+
+/* wizard in left panel */
+.wiz-wrap{display:flex;flex-direction:column;gap:6px}
+.wiz-step-q{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:6px}
+.wiz-ayuda{font-size:11px;color:var(--txt2);background:var(--surf2);border-radius:var(--r2);padding:7px 10px;margin-bottom:8px;white-space:pre-wrap;line-height:1.5;border-left:2px solid var(--border2)}
+.wiz-opts{display:flex;flex-direction:column;gap:5px}
+.wiz-opt{padding:8px 12px;border:1px solid var(--border2);border-radius:var(--r2);font-size:12px;cursor:pointer;background:var(--surf);color:var(--txt);text-align:left;transition:all .15s;font-family:inherit;line-height:1.4}
+.wiz-opt:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+.wiz-opt.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.wiz-step-done{font-size:11px;color:var(--green);font-weight:500;padding:4px 0}
+.wiz-reset{background:none;border:none;color:var(--txt3);font-size:11px;cursor:pointer;font-family:inherit;text-decoration:underline;padding:4px 0;text-align:left}
+.wiz-step-sep{height:1px;background:var(--border);margin:6px 0}
+
+/* supervisor */
+.sup-page{padding:24px;max-width:900px;margin:0 auto}
+.sup-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.sup-topbar h1{font-size:18px;font-weight:600}
+.sup-table{width:100%;border-collapse:collapse;background:var(--surf);border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
+.sup-table th{padding:9px 12px;font-size:11px;font-weight:600;color:var(--txt2);text-align:left;background:var(--surf2);border-bottom:1px solid var(--border)}
+.sup-table td{padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top}
+.sup-table tr:last-child td{border-bottom:none}
+.sup-table tr:hover td{background:var(--surf2)}
+.row-acts{display:flex;gap:6px;opacity:0}
+.sup-table tr:hover .row-acts{opacity:1}
+.ia{width:26px;height:26px;border-radius:var(--r2);border:1px solid var(--border2);background:var(--surf);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px}
+.ia:hover{background:var(--surf2)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r2);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surf);color:var(--txt);font-family:inherit}
+.btn:hover{background:var(--surf2)}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-primary:hover{background:#0e3d77}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-danger{background:var(--red-bg);color:var(--red);border-color:#f5b8b8}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:300}
+.modal-bg.open{display:flex}
+.modal{background:var(--surf);border:1px solid var(--border2);border-radius:var(--r);width:580px;max-width:95vw;max-height:88vh;overflow-y:auto;padding:24px}
+.modal h2{font-size:16px;font-weight:600;margin-bottom:4px}
+.modal .msub{font-size:13px;color:var(--txt2);margin-bottom:18px}
+.mfield{margin-bottom:12px}
+.mfield label{display:block;font-size:12px;font-weight:600;color:var(--txt2);margin-bottom:4px}
+.mfield input,.mfield select,.mfield textarea{width:100%;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--r2);font-size:13px;background:var(--surf);color:var(--txt);outline:none;font-family:inherit}
+.mfield textarea{min-height:80px;resize:vertical}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mactions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
+
+/* login */
+.login-page{display:flex;align-items:center;justify-content:center;height:calc(100vh - 50px)}
+.login-box{background:var(--surf);border:1px solid var(--border);border-radius:var(--r);padding:32px;width:320px;text-align:center}
+.login-box h2{font-size:16px;font-weight:600;margin-bottom:6px}
+.login-box p{font-size:13px;color:var(--txt2);margin-bottom:20px}
+.login-box input{width:100%;padding:9px 12px;border:1px solid var(--border2);border-radius:var(--r2);font-size:14px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:10px;font-family:inherit}
+.login-box input:focus{border-color:var(--blue)}
+.login-err{color:var(--red);font-size:12px;margin-top:6px}
+
+/* views */
+.view{display:none}.view.active{display:flex;flex-direction:column;height:calc(100vh - 50px)}
+#view-sup.active,.view-login.active{display:block}
+.empty{text-align:center;padding:40px;color:var(--txt3);font-size:13px}
+
+/* Loading */
+.loading-screen{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:16px;font-family:'DM Sans',sans-serif}
+.loading-screen.hidden{display:none}
+.loader{width:40px;height:40px;border:3px solid #e0dbd2;border-top-color:#1456a0;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{font-size:14px;color:#5a5650}
+.loading-err{color:#a81c1c;font-size:13px;max-width:400px;text-align:center;line-height:1.5}
+.config-panel{background:#fff;border:1px solid #e0dbd2;border-radius:10px;padding:24px;width:460px;text-align:center}
+.config-panel h2{font-size:16px;font-weight:600;margin-bottom:8px}
+.config-panel p{font-size:13px;color:#5a5650;margin-bottom:16px;line-height:1.5}
+.config-field{text-align:left;margin-bottom:12px}
+.config-field label{display:block;font-size:12px;font-weight:600;color:#9a9590;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.config-field input{width:100%;padding:8px 10px;border:1px solid #ccc7bc;border-radius:6px;font-size:13px;font-family:inherit;outline:none}
+.config-field input:focus{border-color:#1456a0}
+.config-note{font-size:11px;color:#9a9590;margin-top:4px;line-height:1.4}
+
+.loading-screen{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:16px;font-family:'DM Sans',sans-serif}
+.loading-screen.hidden{display:none}
+.loader{width:40px;height:40px;border:3px solid #e0dbd2;border-top-color:#1456a0;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-msg{font-size:14px;color:#5a5650}
+.loading-err{color:#a81c1c;font-size:13px;max-width:420px;text-align:center;line-height:1.6;background:#fde8e8;padding:16px;border-radius:8px}
+.config-panel{background:#fff;border:1px solid #e0dbd2;border-radius:10px;padding:28px;width:480px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.1)}
+.config-panel h2{font-size:17px;font-weight:600;margin-bottom:8px}
+.config-panel p{font-size:13px;color:#5a5650;margin-bottom:18px;line-height:1.5}
+.config-field{text-align:left;margin-bottom:14px}
+.config-field label{display:block;font-size:11px;font-weight:700;color:#9a9590;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.config-field input{width:100%;padding:9px 11px;border:1px solid #ccc7bc;border-radius:6px;font-size:13px;font-family:inherit;outline:none}
+.config-field input:focus{border-color:#1456a0}
+.config-help{font-size:11px;color:#9a9590;margin-top:5px;line-height:1.5;background:#f7f4ef;padding:8px 10px;border-radius:5px}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div id="loading-content">
+    <div class="loader"></div>
+    <div class="loading-msg" id="loading-msg">Conectando con SharePoint...</div>
+  </div>
+</div>
+
+
+
+<!-- LOADING SCREEN -->
+<nav class="nav">
+  <span class="nav-logo">Guía de Atención</span>
+  <span class="nav-spacer"></span>
+  <button class="nav-btn" onclick="reloadFromSharePointData()" style="background:rgba(255,255,255,.1)">↺ Actualizar</button>
+  <button class="nav-btn" onclick="showView('sup-login')">⚙ Supervisor</button>
+</nav>
+
+<!-- MAIN VIEW -->
+<div class="view active" id="view-main">
+
+  <!-- TOP PANEL -->
+  <div class="top-panel">
+    <div class="top-row1">
+      <div class="field">
+        <label>Nombre ejecutivo</label>
+        <input id="ev-ejecutivo" type="text" placeholder="Tu nombre" oninput="onVarChange()">
+      </div>
+      <div class="field">
+        <label>Nombre cliente</label>
+        <input id="ev-cliente" type="text" placeholder="Nombre del cliente" oninput="onVarChange()">
+      </div>
+      <div class="field">
+        <label>N° de caso</label>
+        <input id="ev-caso" type="text" placeholder="Ej: 1234567" oninput="onVarChange()">
+      </div>
+      <div class="field">
+        <label>Motivo de contacto</label>
+        <input id="ev-motivo" type="text" placeholder="Ej: producto llegó dañado" oninput="onVarChange()">
+      </div>
+      <div class="field">
+        <label>Turno</label>
+        <div class="turno-group">
+          <button class="turno-btn active" id="btn-dias" onclick="setTurno('días')">☀️ Días</button>
+          <button class="turno-btn" id="btn-tardes" onclick="setTurno('tardes')">🌆 Tardes</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn btn-sm" onclick="resetAll()" style="height:36px">↺ Limpiar</button>
+      </div>
+    </div>
+
+    <div class="causa-row">
+      <div style="font-size:12px;font-weight:600;color:var(--txt3);white-space:nowrap">Causa de contacto</div>
+      <div class="causa-search-wrap" id="causa-search-container">
+        <div id="causa-selected-view" style="display:none">
+          <div class="causa-selected" id="causa-selected-box">
+            <span class="causa-badge" id="cs-badge"></span>
+            <span id="cs-name"></span>
+            <button class="cs-clear" onclick="clearCausa()">✕</button>
+          </div>
+        </div>
+        <div id="causa-input-view">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="causa-search" placeholder="Buscar por nombre, familia o tipo..." 
+            oninput="filterCausas(this.value)" onfocus="openDropdown()" autocomplete="off">
+          <div class="causa-dropdown" id="causa-dropdown"></div>
+        </div>
+      </div>
+      <div id="preview-bar" style="display:none" class="preview-bar"></div>
+    </div>
+  </div>
+
+  <!-- SPLIT BODY -->
+  <div class="split-body">
+    <!-- LEFT: flow steps -->
+    <div class="left-panel" id="left-panel">
+      <div class="left-empty" id="left-empty">
+        <div style="font-size:28px">🎯</div>
+        <h3>Selecciona la causa</h3>
+        <p style="font-size:12px">El flujo de atención aparecerá aquí con las condiciones específicas de la causa elegida.</p>
+      </div>
+      <div class="left-steps" id="left-steps" style="display:none"></div>
+    </div>
+
+    <!-- RIGHT: scripts -->
+    <div class="right-panel" id="right-panel">
+      <div class="right-empty" id="right-empty">
+        <div style="font-size:28px">💬</div>
+        <h3>Scripts de atención</h3>
+        <p style="font-size:12px;color:var(--txt3)">Los scripts aparecerán aquí según el paso activo y la causa seleccionada.</p>
+      </div>
+      <div class="script-stream" id="script-stream" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPERVISOR LOGIN -->
+<div id="view-sup-login" style="display:none">
+  <div class="login-page">
+    <div class="login-box">
+      <div style="font-size:28px;margin-bottom:12px">🔐</div>
+      <h2>Acceso supervisores</h2>
+      <p>Contraseña requerida para editar causas y scripts</p>
+      <input type="password" id="sup-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPass()">
+      <button class="btn btn-primary" style="width:100%" onclick="checkPass()">Ingresar</button>
+      <div class="login-err" id="login-err"></div>
+      <br><button class="btn btn-sm" style="width:100%;margin-top:6px" onclick="showView('main')">← Volver</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPERVISOR PANEL -->
+<div id="view-sup" style="display:none;height:calc(100vh - 50px);overflow-y:auto">
+  <div class="sup-page">
+    <div class="sup-topbar">
+      <h1>Gestión de causas</h1>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="position:relative">
+          <svg style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--txt3);pointer-events:none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="sup-q" placeholder="Buscar causa..." oninput="renderSupTable(this.value)"
+            style="padding:7px 10px 7px 30px;border:1px solid var(--border2);border-radius:var(--r2);font-size:13px;width:220px;font-family:inherit;outline:none">
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openModal()">+ Nueva causa</button>
+        <button class="btn btn-sm" onclick="reloadFromSharePointData()">↺ Recargar SharePoint</button>
+        <button class="btn btn-sm" onclick="showView('main')">← Volver</button>
+        <button class="btn btn-sm" style="color:var(--blue);border-color:var(--blue-mid)" onclick="showConfigScreen()">⚙ Config URL</button>
+      </div>
+    </div>
+    <div id="sup-table-wrap"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h2 id="modal-h">Nueva causa</h2>
+    <p class="msub">Completa los campos y guarda los cambios.</p>
+    <div class="mrow">
+      <div class="mfield"><label>Número</label><input id="m-num" type="text"></div>
+      <div class="mfield"><label>Tipo</label>
+        <select id="m-tipo"><option>Reclamo</option><option>Solicitud</option><option>Consulta</option><option>Sugerencia</option><option>Felicitación</option></select>
+      </div>
+    </div>
+    <div class="mfield"><label>Familia</label><input id="m-fam" type="text"></div>
+    <div class="mfield"><label>Subfamilia</label><input id="m-sub" type="text"></div>
+    <div class="mfield"><label>Causa / nombre</label><input id="m-causa" type="text"></div>
+    <div class="mfield"><label>Cuando aplica</label><textarea id="m-aplica" rows="2"></textarea></div>
+    <div class="mrow">
+      <div class="mfield"><label>Tipificación</label><input id="m-tip" type="text"></div>
+      <div class="mfield"><label>Manual / Ficha</label><input id="m-ficha" type="text"></div>
+    </div>
+    <div class="mfield"><label>Proceso / Resolución</label><textarea id="m-proceso" rows="4"></textarea></div>
+    <div class="mfield"><label>Script (usa "Indicación para el ejecutivo:" para separar bloques)</label><textarea id="m-script" rows="8"></textarea></div>
+    <div class="mactions">
+      <button class="btn btn-sm" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveModal()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="modal-bg" id="del-modal">
+  <div class="modal" style="width:360px">
+    <h2>Eliminar causa</h2>
+    <p class="msub" id="del-msg"></p>
+    <div class="mactions">
+      <button class="btn btn-sm" onclick="document.getElementById('del-modal').classList.remove('open')">Cancelar</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmDel()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="sheets-notice" style="display:none;position:fixed;bottom:20px;right:20px;background:#1e6e35;color:#fff;padding:12px 18px;border-radius:8px;font-size:13px;z-index:500;align-items:center;gap:10px;box-shadow:0 4px 12px rgba(0,0,0,.2)">
+  ✓ Cambios guardados en sesión · Actualiza la lista SharePoint para que persistan para todos
+</div>
+
+<script>
+// ── STATIC (embebido) ──
+const WIZARD_DATA    = {"Calidad alimentaria":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}},"Producto diferente a etiqueta/etiquetado":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}},"Producto con pieza faltante":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}},"Producto daño en embalaje":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}},"Producto distinto a la descripción":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}},"Producto no funciona":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}},"Producto no venía / Caja vacía":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}},"Producto con daño físico":{"tipo":"wizard","pasos":[{"id":"paso_aplica_gl","pregunta":"¿El producto aplica Garantía Legal?","ayuda":"Se EXCLUYEN: productos open box, reacondicionados y de segunda selección. Verificar en HOLA el detalle de la orden.","opciones":[{"label":"✅ Sí aplica","siguiente":"paso_plazo"},{"label":"❌ No aplica (excluido)","siguiente":"resultado_no_aplica_exclusion"}]},{"id":"paso_plazo","pregunta":"¿El producto está dentro del plazo de garantía?","ayuda":"Plazos:\n• PPS (Perecibles): fecha de vencimiento o máx. 7 días desde compra si no hay fecha\n• ACP (Alimentos/consumibles/mascotas): máx. 6 meses desde compra\n• CATEX / MKTP / SOD GM: máx. 6 meses desde recepción","opciones":[{"label":"✅ Dentro de plazo","siguiente":"paso_tipo_compra"},{"label":"❌ Fuera de plazo","siguiente":"resultado_fuera_plazo"}]},{"id":"paso_tipo_compra","pregunta":"¿Qué tipo de compra realizó el cliente?","ayuda":"Verificar en HOLA: si aparece alerta de Garantía Legal → siempre derivar a local aunque el monto aplique KIP.","opciones":[{"label":"🏪 Tienda física","siguiente":"resultado_tienda_fisica"},{"label":"💻 Online (ecommerce)","siguiente":"paso_canal"}]},{"id":"paso_canal","pregunta":"¿Cuál es el canal de venta online?","ayuda":"Verificar en HOLA en el campo 'Canal de venta':\n• Lider.cl / Lider App → SOD\n• Mundo Lider / Punto de Compra → CATEX\n• Vendido por Marketplace → MKP","opciones":[{"label":"SOD (Lider.cl / Lider App)","siguiente":"paso_alerta_hola"},{"label":"CATEX (Mundo Lider / Punto de Compra)","siguiente":"paso_monto_catex"},{"label":"MKP (Marketplace)","siguiente":"resultado_mkp"}]},{"id":"paso_alerta_hola","pregunta":"¿Aparece alerta de garantías en HOLA?","ayuda":"La alerta dice: \"En caso de Garantía Legal o de Satisfacción, debes derivar a este cliente a tienda para que pueda ejercer la garantía con el producto físico y el documento que acredite la entrega. EXCLUYE productos bigticket o de gran tamaño.\"\n\nSi aparece esta alerta: SIEMPRE derivar a local, independiente del monto.","opciones":[{"label":"⚠️ Sí aparece la alerta","siguiente":"resultado_alerta_garantias"},{"label":"✅ No aparece alerta","siguiente":"paso_monto_sod"}]},{"id":"paso_monto_sod","pregunta":"¿Cuál es el monto total de productos a devolver?","ayuda":"KIP SOD:\n• Calidad Alimentaria: aplica si monto ≤ $50.000\n• Otras causas Garantía Legal: aplica si monto ≤ $15.000","opciones":[{"label":"Calidad Alim. ≤ $50.000 / Otras GL ≤ $15.000 → Aplica KIP","siguiente":"paso_excalibur"},{"label":"Calidad Alim. > $50.000 / Otras GL > $15.000 → No aplica KIP","siguiente":"resultado_derivar_local_sod"}]},{"id":"paso_excalibur","pregunta":"¿Se pudo cancelar en Excalibur?","ayuda":"Ingresar a Excalibur → Cancelaciones → buscar orden → seleccionar producto(s) → Solicitar cancelación.\n\nRecuerda: el monto total de cancelación debe ser ≤ $50.000 para calidad alimentaria y ≤ $15.000 para otras causas.","opciones":[{"label":"✅ Sí se canceló en Excalibur","siguiente":"resultado_anulacion_exitosa"},{"label":"❌ No se pudo cancelar en Excalibur","siguiente":"resultado_error_excalibur"}]},{"id":"paso_monto_catex","pregunta":"¿Cuál es el monto y tamaño del producto? (CATEX)","ayuda":"KIP CATEX aplica por TAMAÑO del producto, independiente del tipo de garantía:\n• Parcel (≤ $15.000): celulares, computadores, electrodomésticos pequeños, TV < 42\"\n• BIG (cualquier monto): camas, colchones, refrigeradores, cocinas, lavadoras → Logística Inversa","opciones":[{"label":"Parcel ≤ $15.000 → Aplica KIP","siguiente":"resultado_catex_kip"},{"label":"Parcel > $15.000 → Logística inversa o tienda","siguiente":"resultado_catex_no_kip"},{"label":"BIG (gran tamaño) → Logística Inversa","siguiente":"resultado_catex_big"}]}],"resultados":{"resultado_no_aplica_exclusion":{"tipo":"instruccion","titulo":"Producto NO aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nEn la descripción escribir: \"Esta dentro de la lista de Producto que NO aplica garantía legal. (Producto Reacondicionado, Segunda selección o Producto Instalado).\"\nResolución: Información de garantía entregada en el contacto","script":"Le comento que lamentablemente este producto no aplica para la garantía legal ya que se encuentra dentro de la categoría de productos excluidos (reacondicionados, open box o segunda selección). De todas maneras, dejo registrado este contacto para respaldo."},"resultado_fuera_plazo":{"tipo":"instruccion","titulo":"Fuera de plazo — No aplica Garantía Legal","color":"red","instruccion":"Crear caso bajo la causa: Consulta sobre políticas de productos (170027)\nResolución: Información de garantía entregada en el contacto\nEn la descripción escribir: \"Fuera de plazo, no aplica garantía legal.\"","script":"Te comento que, tu producto se encuentra fuera del plazo de garantía legal🙌. De todas maneras, debo informarte que registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_tienda_fisica":{"tipo":"instruccion","titulo":"Compra en Tienda Física → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa correspondiente.\nEn la descripción agregar el problema del cliente + \"CLIENTE DERIVADO A LOCAL\".\nResolución: Cliente derivado a local.\nSolicitar fotografías del producto si reclama por WhatsApp (no es obligatorio).","script":"Entiendo lo que me comentas, para poder gestionar tu caso, ¿podrías indicarme por qué medio realizaste la compra?🤔\n\nTe comento que para gestionar el caso debes acercarte al local más cercano con la boleta que acredite la compra. De todas formas dejaré ingresado este contacto para respaldo🤝."},"resultado_alerta_garantias":{"tipo":"instruccion","titulo":"⚠️ Alerta Garantías en HOLA → Siempre Derivar a Local","color":"red","instruccion":"Aunque el monto aplique KIP, si aparece la alerta SIEMPRE derivar a local.\nCrear caso con la causa correspondiente.\nEn descripción agregar: \"Alerta Garantías\" + lo indicado al cliente.\nResolución: Cliente derivado a local.","script":"Te comento que, para poder gestionar tu requerimiento, debes dirigirte al local más cercano con el producto y la boleta que acredite la compra🤝. De todas maneras, registraré este caso acerca de lo que solicitaste durante esta atención💻."},"resultado_derivar_local_sod":{"tipo":"instruccion","titulo":"SOD — Monto supera KIP → Derivar a Local","color":"amber","instruccion":"Crear caso con la causa identificada.\nResolución: Cliente derivado a local.\nSi el cliente por fuerza mayor no puede ir a tienda → escalar a supervisor (Ver 2.3.F.4).\nSolicitar fotografías si reclama por WhatsApp (no obligatorio).","script":"Te comento que para gestionar tu caso, debes dirigirte al local más cercano con el producto y la boleta o cualquier documento que acredite la compra🛒. De todas maneras, dejaré un registro de lo que me indicaste durante esta atención. Me podrías por favor facilitar fotos del producto para adjuntarlo como evidencia en el caso🙌."},"resultado_anulacion_exitosa":{"tipo":"instruccion","titulo":"✅ Anulación exitosa en Excalibur","color":"green","instruccion":"1. Tomar captura de la cancelación en Excalibur.\n2. Crear caso con la causa correspondiente.\n   - Resolución: Producto/s anulado en primer contacto\n   - Adjuntar captura de cancelación\n   - En 'Monto a devolver en pesos chilenos': ingresar monto cancelado\n   - En 'Número de NC': ingresar Folio de Excalibur\n   - En 'Monto de compensación': ingresar compensación según tabla (si aplica)\n3. Para Calidad Alimentaria con monto ≤ $15.000: compensación automática (NO crear caso manual).\n4. Para otros montos: verificar historial de compensaciones antes de crear caso de compensación reactiva (170041).\n\n⚠️ NO mencionar al cliente que se lo compensará.","script":"Te comento que, realizaré la anulación de los productos que me indicaste del pedido con número 👉[N° pedido]. El monto a devolver es de $[monto] y la devolución de tu dinero se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_error_excalibur":{"tipo":"instruccion","titulo":"❌ Error al cancelar en Excalibur","color":"red","instruccion":"Crear caso con la causa correspondiente.\nEn descripción agregar: \"Error en cancelar\" + lo indicado por el cliente.\nResolución: Devolución de dinero (sin retiro del producto) — para garantía legal y satisfacción.\nAdjuntar captura del error si es posible.","script":"Te comento que, debo registrar este caso para poder gestionar la devolución de tu dinero, la cual se podrá ver reflejada dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_kip":{"tipo":"instruccion","titulo":"CATEX Parcel ≤ $15.000 → KIP","color":"green","instruccion":"Aplicar KIP CATEX.\nCrear caso con la causa identificada.\nResolución: Producto/s anulado en primer contacto.\nVer ficha: 2.3.F.1 Anular pedido / 2.4.P.1 Devolver dinero.\nRegistrar en HOLA: monto cancelado + monto compensación.\nVerificar historial antes de crear caso compensación reactiva (170041).","script":"Te comento que, realizaré la anulación del producto reclamado. El monto a devolver se podrá ver reflejado dentro del día o un plazo máximo de 7 días hábiles🤝."},"resultado_catex_no_kip":{"tipo":"instruccion","titulo":"CATEX Parcel > $15.000 → Logística Inversa o Tienda","color":"amber","instruccion":"Crear caso con la causa identificada.\nPreguntar al cliente: ¿prefiere Cambio de producto o Devolución de dinero?\n• Cambio → Resolución: Cambio del producto. Verificar stock en OMS.\n• Devolución → Resolución: Devolución de dinero. Coordinar retiro.","script":"Comprendo tu situación. Para poder gestionar tu caso, ¿qué prefieres: el cambio del producto o la devolución de tu dinero?🤔"},"resultado_catex_big":{"tipo":"instruccion","titulo":"CATEX BIG (gran tamaño) → Logística Inversa","color":"amber","instruccion":"Aplicar Logística Inversa.\nCrear caso de gestión interna: Coordinación retiro/entrega en domicilio/punto (800606).\nVer ficha: 2.5.F.19 Coordinación de retiro/entrega en domicilio/punto.","script":"Comprendo🙌. Para gestionar la devolución de tu producto, coordinaremos el retiro desde tu domicilio. Te estaremos contactando para agendar el retiro🤝."},"resultado_mkp":{"tipo":"instruccion","titulo":"Marketplace → Gestión Coordinación Retiro","color":"blue","instruccion":"Crear caso de gestión interna: Coordinación retiro/entrega de producto en domicilio/punto (800606).\nVer ficha: 2.5.F.19 / 2.5.F.11 Devolución Productos Marketplace Contact Center.\nEnviar correo y WhatsApp al cliente con plazos y detalle de devolución.\nUsar template: Devolución de dinero.","script":"Te comento que gestionaré la devolución de tu producto de Marketplace. Coordinaremos el retiro desde tu domicilio y recibirás la devolución de tu dinero en un plazo máximo de 7 días hábiles una vez realizado el retiro🤝."}}}};
+const ESTRUCTURA_STATIC = [{"titulo":"Saludo","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"¡Hola👋 buenos días/tardes, (nombre cliente)! ¿Cómo estás? Mi nombre es XXXX y estoy aquí para continuar atendiendo tu contacto 🙌.\n\n¡Hola 😀, buenos días/tardes (nombre cliente)! Para poder asistirte de mejor forma, por favor envíanos un mensaje directo a nuestro Instagram o escríbenos al WhatsApp 📲+56957211492, el cual se encuentra disponible de lunes a viernes de 08:00 a 22:00 hrs, fin de semana y festivos de 09:00 a 22:00 hrs, para continuar con la atención. ¡Saludos!😊 (Sólo X/Ex Twitter)"}]}]},{"titulo":"Frase de contención y empatía (Sólo reclamos)\n\nSolicitud de datos  y/o información (Solicitudes/Reclamos)","secciones":[{"condicion":"NO hay datos en el historial del BOT:","bloques":[{"tipo":"script_cliente","texto":"(Nombre cliente), comprendo tu malestar por el inconveniente asociado a XXXX y te pido disculpas por lo que esto te haya podido ocasionar. Por favor, ¿me podrías indicar tu Rut y/o número de pedido para revisar en nuestro sistema?🙌 (Reclamo)\n\nComprendo lo que me informas, (nombre cliente)🙌. Por favor indícame tu Rut y el número de tu pedido para revisar en nuestro sistema💻. (Solicitud)"}]},{"condicion":"SI hay datos en el historial del BOT:","bloques":[{"tipo":"script_cliente","texto":"(Nombre cliente), comprendo tu malestar por el inconveniente asociado a XXXX, y te pido disculpas por lo que esto te haya podido ocasionar. Por favor, espérame un momento, revisaré la información en nuestro sistema.🙌 (Reclamo)\n\n(Nombre cliente), comprendo 🙌. Por favor, dame unos minutos, revisaré la información en nuestro sistema💻. (Solicitud)"}]}]},{"titulo":"Script según causa","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"REVISA EL SCRIPT CORRESPONDIENTE A CADA MARCA, TIPO O CAUSA CORRESPONDIENTE"}]}]},{"titulo":"Verificación de datos​ (Solo reclamos, solicitudes y consultas de tipo 123093, 190001, 800101 y 800400)","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"(Nombre cliente), antes de continuar con la atención☝️ debo validar algunos datos, por lo que te realizaré 2 preguntas🙌:\n\n1. Cliente NO quiere responder preguntas de validación: \nComprendo, no te preocupes (nombre cliente)🙌. Para continuar con la gestión del caso utilizaré la información personal previamente registrada en nuestro sistema💻.\nDe igual forma, por tu seguridad, en caso de requerir modificar tus datos te invito a dirigirte a la tienda más cercana con tu cédula de identidad. También puedes actualizar tu información, excepto el correo electrónico, a través de nuestra página web o utilizando la LiderApp desde tu dispositivo móvil.📲\n\n2. Cliente SI está de acuerdo en responder preguntas de validación: \n✅Por favor, ¿me podrías confirmar los últimos 4 dígitos de tu número de teléfono?📲\n \n✅Por favor, ¿me podrías confirmar las primeras 3 letras del correo electrónico asociado a tu cuenta?📧\n\na) Cliente responde correctamente las preguntas de validación: \nGracias por la información entregada, (nombre cliente)😊. Te confirmo que los datos coinciden con los registrados en nuestro sistema💻.\n\nb) Cliente responde incorrectamente las preguntas de validación: \nGracias por la información entregada, (nombre cliente)🙌 Te informo que los datos proporcionados no coinciden con los registrados en nuestro sistema☝️. ¿Deseas realizar la modificación de tus datos?💻\n\n(Esperar respuesta del cliente)"}]},{"condicion":"• Cliente no desea modificar datos:","bloques":[{"tipo":"script_cliente","texto":"Entiendo, no te preocupes, (nombre cliente)🙌. Te comento que para la gestión de este caso utilizaré la información personal previamente registrada en nuestro sistema💻. De igual forma, por la seguridad de tu información, te invito a dirigirte a la tienda más cercana con tu cédula de identidad. También puedes actualizar tu información, excepto el correo electrónico, a través de nuestra página web o utilizando la LiderApp desde tu dispositivo móvil.📲"}]},{"condicion":"• Cliente desea modificar datos:","bloques":[{"tipo":"script_cliente","texto":"Comprendo, (nombre cliente)🤝. Para proceder con la modificación de datos, te haré dos preguntas de validación relacionadas con tu última compra🛒. Esto nos permitirá confirmar tu identidad y brindarte un mejor servicio☺️."},{"tipo":"instruccion_ejecutivo","texto":"Apoyate en la sección de \"Actualización de datos​\" y causas asociada a la modificación de datos: 1000102: Modificar datos Mi cuenta Lider App, 1000103: Modificar datos Mi cuenta acuenta.cl y 1000104: Modificar datos Mi cuenta Centralmayorista.cl"}]}]},{"titulo":"Actualización de datos​","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"1. Solicitud del cliente es modificar datos:\n(Nombre cliente)☝️. Por favor, podrías indicarme la siguiente información con respecto a tu última compra realizada el día 👉XX/XX/XXXX. ¿Qué tipo de entrega tuviste🧐: (Indicar las siguientes opciones) Pick Up, Home Delivery o compra en tienda?\n\n (Esperar respuesta del cliente)\n\nGracias por la información, (nombre cliente)🤝. En base a lo informado, ¿podrías indicarme el método de pago utilizado?💳\n\n(Esperar respuesta del cliente)\n\na) Si el cliente responde correctamente todas las preguntas de seguridad:\n(Nombre del cliente)😊, te informo que las preguntas de seguridad han sido respondidas correctamente. Procederé a realizar la modificación solicitada. Para continuar, por favor indícame los datos que deseas actualizar🤝\n\n(Esperar respuesta del cliente)"},{"tipo":"instruccion_ejecutivo","texto":"En HOLA ubícate en la sección “Datos personales del Cliente”, para continuar debes presionar “Editar datos de cliente\""}]},{"condicion":"• Se realizó la actualización con éxito:","bloques":[{"tipo":"script_cliente","texto":"(Nombre del cliente)😊, te informo que la actualización de tus datos se realizó exitosamente. En breve, recibirás un correo de confirmación con los detalles de este cambio. Si necesitas más información o asistencia adicional, no dudes en contactarnos☺️."}]},{"condicion":"*Indicación para el ejecutivo: En el caso de modificación de correo electronico recomendar*:","bloques":[{"tipo":"script_cliente","texto":"(Nombre cliente)☺️, te informo que para garantizar que el cambio sea completamente efectivo, es recomendable que verifiques tu correo electronico y posteriormente actualices tu contraseña en nuestro sitio web o en la aplicación Lider App📲. Esto te permitirá acceder sin inconvenientes a tu cuenta con el nuevo correo registrado☝️"}]},{"condicion":"• No se realizo la actualización con éxito:","bloques":[{"tipo":"script_cliente","texto":"(Nombre del cliente)🙌, te comento que el sistema no me permitió modificar tus datos, por lo que tendré que escalar el caso🤝"}]},{"condicion":"Indicación para el ejecutivo:","bloques":[{"tipo":"script_cliente","texto":"Para continuar con el proceso, si el sistema no te permite modificar los datos,  debes seguir los pasos según el procedimiento de “Mi Cuenta” y reportarlo a través de HOLA, haciendo clic en el botón “Reportar errores de sistema”.\n\nLuego de reportar el error en HOLA deberás ingresar un caso bajo la causa “Sitio web/app no me permite actualizar datos de Mi cuenta (1000101)” con resolución: “Caso derivado a soporte”. ​Deberás indicar el número de ticket asociado.\n\n(Nombre del cliente)🙌, te comento que tu caso fue registrado bajo el N° XXXX, el cuál será gestionado en un plazo máximo de 5 días🤝\n\nb) Si el cliente NO responde correctamente todas las preguntas de seguridad y su solicitud No está asociada a la modificación de datos, sin embargo, se identifica la necesidad de actualizar datos:\n(Nombre de cliente)🙌, te informo que no fue posible actualizar tus datos debido a que la información entregada no concuerda con el registro que se visualiza en sistema. Por lo que, para la gestión de este caso utilizaremos la información personal previamente registrada en nuestro sistema. De igual forma, por la seguridad de tu información, te invitamos a dirigirte a la tienda más cercana con tu cédula de identidad. También puedes actualizar tu información, excepto el correo electrónico, a través de nuestra página web o utilizando la LiderApp desde tu dispositivo móvil📲\n\n2. Solicitud del cliente No está asociada a la modificación de datos, sin embargo, se identifica la necesidad de actualizar datos, pero NO cuenta con información de compras en HOLA:\n(Nombre del cliente)🙌, te comento que debido a que no registramos compras asociadas a tu cuenta y las preguntas de seguridad están basadas en tu última compra, no es posible realizar modificaciones en tu información personal. Te invito a dirigirte a la tienda más cercana con tu cédula de identidad. También puedes actualizar tu información, excepto el correo electrónico, a través de nuestra página web o utilizando la LiderApp desde tu dispositivo móvil. \nDe igual forma, te comento que para la gestión de este caso utilizaré la información personal previamente registrada en nuestro sistema💻."}]}]},{"titulo":"Ingreso del número de caso (Sólo reclamos y solicitudes)","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"Gracias por la información entregada🙌. Te informo que tu requerimiento ha sido ingresado con el número de caso XXXX🤝."}]}]},{"titulo":"Aseguramiento","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"(Nombre cliente) 😊, antes de dar por finalizada esta atención, me gustaría saber si ¿Tienes alguna duda adicional o algo más en lo que te pueda seguir asistiendo por esta vía? 💻 ¡Lo hago con gusto! 😀"}]}]},{"titulo":"Derivación a encuesta","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"Serás derivado a una encuesta donde la nota máxima es 7📝. Tu opinión es esencial para nosotros y nos ayuda a mejorar🙌. ¡Que tengas un excelente día/tarde!👋"}]}]},{"titulo":"Despedida","secciones":[{"condicion":null,"bloques":[{"tipo":"script_cliente","texto":"(Nombre cliente), gracias por comunicarte con nosotros💙. Recuerda que te asistió (Nombre ejecutivo)🤝."}]}]}];
+const TOP_NAMES      = ["Producto cobrado no entregado", "Calidad alimentaria", "Consulta por el estado del pedido", "Consulta estado devolución de dinero", "Devolución pesos mi club no abonada", "Producto no funciona", "Incumplimiento en entrega de pedido", "Producto con daño físico", "Envío de boleta, factura y/o nota de crédito", "Eliminar Mi Cuenta Lider APP"];
+const PASS           = 'supervisor2026';
+
+// ── SHAREPOINT CONFIG ──
+// Se guarda en localStorage la primera vez que el usuario configura
+let SP_CONFIG = (function(){
+  try {
+    const s = localStorage.getItem('sp_config_v1');
+    if(s) return JSON.parse(s);
+  } catch(e) {}
+  return { site_url: '', list_name: 'CausasCallCenter' };
+})();
+
+// ── RUNTIME DB ──
+let DB = { estructura: ESTRUCTURA_STATIC, causas: [] };
+let TOP_IDS = [];
+
+// ── STATE ──
+let vars = {ejecutivo:'',cliente:'',caso:'',motivo:'',saludo:'días'};
+let activeCausaId = null;
+let stepDone = {};
+let activeStep = 0;
+let wizProgress = {};
+let editId = null;
+let delId = null;
+
+// ── SHAREPOINT API ──
+async function loadFromSharePoint() {
+  if(!SP_CONFIG.site_url) { showConfigScreen(); return; }
+
+  setLoading('Conectando con SharePoint...');
+  const url = SP_CONFIG.site_url.replace(/\/+$/, '');
+  const listName = SP_CONFIG.list_name || 'CausasCallCenter';
+  // SharePoint REST API: get all items from list
+  const apiUrl = url + `/_api/web/lists/getbytitle('${encodeURIComponent(listName)}')/items?$select=*&$top=500`;
+
+  try {
+    const resp = await fetch(apiUrl, {
+      headers: {
+        'Accept': 'application/json;odata=verbose',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'   // uses Windows/AD auth automatically
+    });
+
+    if(!resp.ok) {
+      const errText = await resp.text().catch(()=>'');
+      throw new Error(`HTTP ${resp.status}: ${errText.substring(0,200)}`);
+    }
+
+    const data = await resp.json();
+    const items = data?.d?.results || [];
+    if(!items.length) throw new Error('La lista "'+listName+'" está vacía o no existe. Verifica que importaste los datos y que el nombre de la lista es correcto.');
+
+    processCausasFromSP(items);
+    hideLoading();
+
+  } catch(e) {
+    showLoadError(e.message);
+  }
+}
+
+function processCausasFromSP(items) {
+  DB.causas = items.map(row => {
+    const script  = row.script_rrss        || row.Script_rrss        || row.ScriptRrss       || '';
+    const proceso = row.proceso_resolucion || row.Proceso_resolucion || row.ProcesoResolucion || '';
+    const id      = row.id_causa           || row.IdCausa            || ('c_sp_'+row.ID);
+    const wizard  = (row.tiene_wizard === '1' || row.tiene_wizard === true || row.TieneWizard === true);
+
+    const scriptSecs = parseScript(script);
+    const procSecs   = parseScript(proceso);
+
+    const c = {
+      id:                  id,
+      numero:              row.numero              || row.Numero            || '',
+      familia:             row.familia             || row.Familia           || '',
+      subfamilia:          row.subfamilia          || row.Subfamilia        || '',
+      cuando_aplica:       row.cuando_aplica       || row.CuandoAplica      || '',
+      tipo:                row.tipo                || row.Tipo              || 'Consulta',
+      manual_ficha:        row.manual_ficha        || row.ManualFicha       || '',
+      tipificacion:        row.tipificacion        || row.Tipificacion      || '',
+      causa_reclamo:       row.causa_reclamo       || row.CausaReclamo      || row.Title || '',
+      proceso_resolucion:  proceso,
+      proceso_secciones:   procSecs,
+      script_secciones:    scriptSecs,
+      tiene_condiciones:   scriptSecs.some(s => s.condicion),
+      tiene_wizard:        wizard,
+      requiere_numero_compra: /n[°º]\s*de\s*(orden|pedido|compra)/i.test(script+proceso),
+      sistemas: ['HOLA','Excalibur','SOD','CATEX','MKTP','Mi Club','LiderApp','Marketplace']
+        .filter(s => (script+proceso).toLowerCase().includes(s.toLowerCase()))
+    };
+
+    if(wizard && WIZARD_DATA[c.causa_reclamo]) {
+      c.wizard = WIZARD_DATA[c.causa_reclamo];
+    }
+    return c;
+  }).filter(c => c.causa_reclamo);
+
+  TOP_IDS = TOP_NAMES
+    .map(name => DB.causas.find(c => c.causa_reclamo.toLowerCase() === name.toLowerCase()))
+    .filter(Boolean)
+    .map(c => c.id);
+
+  console.log(`✓ ${DB.causas.length} causas cargadas desde SharePoint`);
+}
+
+// ── LOADING UI ──
+function setLoading(msg) {
+  document.getElementById('loading-screen').classList.remove('hidden');
+  document.getElementById('loading-content').innerHTML =
+    '<div class="loader"></div><div class="loading-msg">'+msg+'</div>';
+}
+function hideLoading() {
+  document.getElementById('loading-screen').classList.add('hidden');
+}
+function showLoadError(msg) {
+  document.getElementById('loading-content').innerHTML =
+    '<div style="font-size:32px;margin-bottom:12px">⚠️</div>'
+   +'<div class="loading-err"><strong>No se pudo conectar con SharePoint</strong><br><br>'+esc(msg)+'</div>'
+   +'<div style="display:flex;gap:8px;margin-top:16px">'
+   +'<button onclick="showConfigScreen()" style="padding:8px 20px;background:#1456a0;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit">⚙ Configurar URL</button>'
+   +'<button onclick="loadFromSharePoint()" style="padding:8px 20px;background:none;border:1px solid #ccc;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit">↺ Reintentar</button>'
+   +'</div>';
+}
+function showConfigScreen() {
+  document.getElementById('loading-screen').classList.remove('hidden');
+  document.getElementById('loading-content').innerHTML = `
+    <div class="config-panel">
+      <div style="font-size:32px;margin-bottom:10px">🔗</div>
+      <h2>Conectar con SharePoint</h2>
+      <p>Ingresa la URL del sitio SharePoint y el nombre exacto de la lista donde cargaste las causas.</p>
+      <div class="config-field">
+        <label>URL del sitio SharePoint</label>
+        <input type="text" id="cfg-url" placeholder="https://empresa.sharepoint.com/sites/callcenter" value="${esc(SP_CONFIG.site_url)}">
+        <div class="config-help">📌 Es la URL que aparece en tu navegador cuando entras al sitio de SharePoint. Copia todo hasta el nombre del sitio, sin barra final.</div>
+      </div>
+      <div class="config-field">
+        <label>Nombre de la lista</label>
+        <input type="text" id="cfg-list" placeholder="CausasCallCenter" value="${esc(SP_CONFIG.list_name||'CausasCallCenter')}">
+        <div class="config-help">📌 Es el nombre exacto de la lista SharePoint donde están las causas (tal como aparece en SharePoint).</div>
+      </div>
+      <button onclick="saveConfig()" style="width:100%;padding:10px;background:#1456a0;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:14px;font-weight:500;font-family:inherit;margin-top:4px">Conectar →</button>
+    </div>`;
+}
+function saveConfig() {
+  const url  = document.getElementById('cfg-url').value.trim();
+  const list = document.getElementById('cfg-list').value.trim() || 'CausasCallCenter';
+  if(!url) { alert('Ingresa la URL de SharePoint'); return; }
+  SP_CONFIG = { site_url: url, list_name: list };
+  try { localStorage.setItem('sp_config_v1', JSON.stringify(SP_CONFIG)); } catch(e) {}
+  loadFromSharePoint();
+}
+
+function reloadFromSharePointData() {
+  if(activeCausaId) clearCausa();
+  loadFromSharePoint();
+}
+function persistDB() {
+  const n = document.getElementById('sheets-notice');
+  if(n) { n.style.display='flex'; setTimeout(()=>n.style.display='none', 4000); }
+}
+
+// ── UTILS ──
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function renderInstrBlock(b){
+  if(!b || b.tipo!=='instruccion_ejecutivo') return '';
+  const txt = applyVars(b.texto||'');
+  return '<div class="blk-instr"><div class="blk-instr-lbl">&#9999; Instrucción'
+    +'<button class="copy-btn" onclick="copyNearest(this)">Copiar</button></div>'
+    +'<div class="blk-instr-txt blk-copyable">'+esc(txt)+'</div></div>';
+}
+function renderClientBlock(b){
+  if(!b || b.tipo!=='script_cliente') return '';
+  const txt = applyVars(b.texto||'');
+  return '<div class="blk-client"><div class="blk-client-lbl">&#128172; Script cliente'
+    +'<button class="copy-btn" onclick="copyNearest(this)">Copiar</button></div>'
+    +'<div class="blk-client-txt blk-copyable">'+esc(txt)+'</div></div>';
+}
+function renderBlock(b){ return renderInstrBlock(b)+renderClientBlock(b); }
+function copyNearest(btn){
+  const el = btn.closest('.blk-instr,.blk-client').querySelector('.blk-copyable');
+  if(el) copyText(el.textContent, btn);
+}
+
+function applyVars(text){
+  const c = vars.cliente  || '(nombre cliente)';
+  const e = vars.ejecutivo|| '(nombre ejecutivo)';
+  const n = vars.caso     || 'XXXX';
+  const m = vars.motivo   || 'XXXX';
+  const s = vars.saludo;
+  return text
+    .replace(/buenos\s+días\/tardes/gi, 'buenos '+s)
+    .replace(/buenas\s+días\/tardes/gi, 'buenos '+s)
+    .replace(/día\/tarde/gi, s==='días'?'día':'tarde')
+    .replace(/excelente día\/tarde/gi, s==='días'?'excelente día':'excelente tarde')
+    .replace(/\(Nombre del cliente\)/gi,c).replace(/\(Nombre cliente\)/gi,c)
+    .replace(/\(nombre cliente\)/gi,c).replace(/\(nombre del cliente\)/gi,c)
+    .replace(/\(Nombre ejecutivo\)/gi,e).replace(/\(nombre ejecutivo\)/gi,e)
+    .replace(/Mi nombre es XXXX/gi,'Mi nombre es '+e)
+    .replace(/número de caso XXXX/gi,'número de caso '+n)
+    .replace(/caso número XXXX/gi,'caso número '+n)
+    .replace(/N°\s*XXXX/gi,'N° '+n)
+    .replace(/inconveniente asociado a XXXX/gi,'inconveniente asociado a '+m);
+}
+
+function copyText(t, el){
+  navigator.clipboard.writeText(t).then(()=>{
+    el.textContent='✓'; el.classList.add('ok');
+    setTimeout(()=>{ el.textContent='Copiar'; el.classList.remove('ok'); },1800);
+  });
+}
+function copyWizText(btn, type){
+  const container = btn.closest('.blk-instr') || btn.closest('.blk-client');
+  if(!container) return;
+  const sel = type===0 ? '[data-wiz-instr]' : '[data-wiz-script]';
+  const el = container.querySelector(sel);
+  if(el) copyText(el.textContent, btn);
+}
+
+// ── VIEW SWITCHER ──
+function showView(id){
+  ['main','sup-login','sup'].forEach(v=>{
+    const el = document.getElementById('view-'+v);
+    if(el) el.style.display = (v===id) ? (v==='main'?'flex':'block') : 'none';
+  });
+  if(id==='sup') renderSupTable('');
+  if(id==='main' && activeCausaId) renderFlow();
+}
+
+function checkPass(){
+  if(document.getElementById('sup-pass').value===PASS){
+    document.getElementById('sup-pass').value='';
+    document.getElementById('login-err').textContent='';
+    showView('sup');
+  } else {
+    document.getElementById('login-err').textContent='Contraseña incorrecta';
+  }
+}
+
+// ── VARS ──
+function setTurno(t){
+  vars.saludo = t;
+  document.getElementById('btn-dias').classList.toggle('active', t==='días');
+  document.getElementById('btn-tardes').classList.toggle('active', t==='tardes');
+  refreshScripts();
+}
+
+function onVarChange(){
+  vars.ejecutivo = document.getElementById('ev-ejecutivo').value.trim();
+  vars.cliente   = document.getElementById('ev-cliente').value.trim();
+  vars.caso      = document.getElementById('ev-caso').value.trim();
+  vars.motivo    = document.getElementById('ev-motivo').value.trim();
+  updatePreview();
+  refreshScripts();
+}
+
+function updatePreview(){
+  const bar = document.getElementById('preview-bar');
+  if(!vars.cliente && !vars.ejecutivo && !vars.caso){bar.style.display='none';return;}
+  bar.style.display='flex';
+  let parts = [];
+  if(vars.cliente) parts.push('<strong>'+esc(vars.cliente)+'</strong>');
+  if(vars.ejecutivo) parts.push('Ejecutivo: <strong>'+esc(vars.ejecutivo)+'</strong>');
+  if(vars.caso) parts.push('Caso: <strong>'+esc(vars.caso)+'</strong>');
+  if(vars.motivo) parts.push('Motivo: <em>'+esc(vars.motivo)+'</em>');
+  bar.innerHTML = 'Buenos '+vars.saludo+', '+parts.join(' · ');
+}
+
+function resetAll(){
+  ['ev-ejecutivo','ev-cliente','ev-caso','ev-motivo'].forEach(id=>document.getElementById(id).value='');
+  vars = {ejecutivo:'',cliente:'',caso:'',motivo:'',saludo:'días'};
+  setTurno('días');
+  clearCausa();
+  updatePreview();
+}
+
+// ── CAUSA SELECTOR ──
+function openDropdown(){
+  filterCausas(document.getElementById('causa-search').value);
+  document.getElementById('causa-dropdown').classList.add('open');
+}
+
+document.addEventListener('click', e=>{
+  const wrap = document.getElementById('causa-search-container');
+  if(wrap && !wrap.contains(e.target)) document.getElementById('causa-dropdown').classList.remove('open');
+});
+
+function filterCausas(q){
+  const qt = q.toLowerCase().trim();
+  const dd = document.getElementById('causa-dropdown');
+
+  const topCausas = TOP_IDS.map(id=>DB.causas.find(c=>c.id===id)).filter(Boolean);
+  const allCausas = qt
+    ? DB.causas.filter(c=>
+        c.causa_reclamo.toLowerCase().includes(qt)||
+        c.familia.toLowerCase().includes(qt)||
+        c.subfamilia.toLowerCase().includes(qt)||
+        (c.tipo||'').toLowerCase().includes(qt)
+      )
+    : DB.causas;
+
+  let html = '';
+  if(!qt && topCausas.length){
+    html += '<div class="cd-section"><div class="cd-section-label"><span class="star">★</span> Más frecuentes</div>';
+    topCausas.forEach(c=>{ html += cdItem(c); });
+    html += '</div><div class="cd-divider"></div>';
+  }
+
+  if(allCausas.length){
+    html += '<div class="cd-section"><div class="cd-section-label">'+(qt?'Resultados ('+allCausas.length+')':'Todas las causas ('+allCausas.length+')')+'</div>';
+    allCausas.forEach(c=>{ html += cdItem(c); });
+    html += '</div>';
+  } else if(qt){
+    html = '<div class="empty">Sin resultados para "'+esc(q)+'"</div>';
+  }
+
+  dd.innerHTML = html;
+  dd.classList.add('open');
+}
+
+function cdItem(c){
+  const tipoBadge = {'Reclamo':'cb-Reclamo','Solicitud':'cb-Solicitud','Consulta':'cb-Consulta','Sugerencia':'cb-Sugerencia','Felicitación':'cb-Felicitacion'}[c.tipo]||'cb-Consulta';
+  return '<div class="cd-item" data-causaid="'+c.id+'" onclick="selectCausa(this.dataset.causaid)">'
+    +'<span class="causa-badge '+tipoBadge+'">'+esc(c.tipo)+'</span>'
+    +esc(c.causa_reclamo)
+    +'<span class="cd-fam">'+esc(c.subfamilia)+'</span>'
+    +'</div>';
+}
+
+function selectCausa(id){
+  activeCausaId = id;
+  const c = DB.causas.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('causa-dropdown').classList.remove('open');
+  document.getElementById('causa-input-view').style.display='none';
+  document.getElementById('causa-selected-view').style.display='block';
+  const tipoBadge = {'Reclamo':'cb-Reclamo','Solicitud':'cb-Solicitud','Consulta':'cb-Consulta','Sugerencia':'cb-Sugerencia','Felicitación':'cb-Felicitacion'}[c.tipo]||'cb-Consulta';
+  document.getElementById('cs-badge').className='causa-badge '+tipoBadge;
+  document.getElementById('cs-badge').textContent=c.tipo;
+  document.getElementById('cs-name').textContent=c.causa_reclamo;
+  stepDone = {};
+  activeStep = 0;
+  if(!wizProgress[id]) wizProgress[id]={answers:{},history:['paso_aplica_gl']};
+  renderFlow();
+}
+
+function clearCausa(){
+  activeCausaId = null;
+  document.getElementById('causa-input-view').style.display='block';
+  document.getElementById('causa-selected-view').style.display='none';
+  document.getElementById('causa-search').value='';
+  stepDone = {}; activeStep = 0;
+  document.getElementById('left-empty').style.display='flex';
+  document.getElementById('left-steps').style.display='none';
+  document.getElementById('right-empty').style.display='flex';
+  document.getElementById('script-stream').style.display='none';
+}
+
+// ── FLOW RENDERING ──
+// Map estructura steps to what they inject in the flow
+// Step 2 ("Script según causa") is replaced by the actual causa scripts
+const STEP_CAUSA_IDX = 2; // index in estructura array
+
+function renderFlow(){
+  if(!activeCausaId){ clearCausa(); return; }
+  const causa = DB.causas.find(x=>x.id===activeCausaId);
+  if(!causa) return;
+
+  document.getElementById('left-empty').style.display='none';
+  document.getElementById('left-steps').style.display='block';
+  document.getElementById('right-empty').style.display='none';
+  document.getElementById('script-stream').style.display='flex';
+
+  renderLeftPanel(causa);
+  renderRightPanel(causa);
+}
+
+
+function renderLeftPanel(causa){
+  const steps = document.getElementById('left-steps');
+  let html = '';
+  DB.estructura.forEach((step, idx)=>{
+    const done = !!stepDone[idx];
+    const isActive = idx === activeStep;
+    const collapsed = !isActive && !done ? false : false; // all start expanded
+    const numClass = done ? 'sn-done' : isActive ? 'sn-active' : 'sn-default';
+    const cardClass = 'step-card'+(isActive?' active':'')+(done?' done':'');
+
+    html += '<div class="'+cardClass+'" id="step-card-'+idx+'">';
+    html += '<div class="step-card-hdr" onclick="toggleStep('+idx+')">';
+    html += '<div class="step-num '+numClass+'">'+(done?'✓':(idx+1))+'</div>';
+    html += '<span class="step-title">'+esc(step.titulo.split('\n')[0].trim())+'</span>';
+    if(done) html += '<span class="step-done-tag">✓ Completado</span>';
+    html += '<span class="step-chevron">▼</span>';
+    html += '</div>';
+    html += '<div class="step-body" id="step-body-'+idx+'">';
+
+    if(idx === STEP_CAUSA_IDX){
+      // This is the causa step
+      // First show any exec instructions from this causa
+      const causaInstrs = causa.script_secciones.flatMap(sec=>(sec.bloques||[]).filter(b=>b.tipo==='instruccion_ejecutivo'));
+      causaInstrs.forEach(b=>{ html += renderInstrBlock(b); });
+      if(causa.tiene_wizard){
+        html += renderWizLeft(causa);
+      } else if(causa.tiene_condiciones){
+        html += renderCondLeft(causa.script_secciones, causa.id);
+      }
+    } else {
+      // Show instructions from estructura step
+      const instrBlocks = step.secciones.flatMap(sec=>(sec.bloques||[]).filter(b=>b.tipo==='instruccion_ejecutivo'));
+      if(instrBlocks.length){
+        instrBlocks.forEach(b=>{ html += renderInstrBlock(b); });
+      } else {
+        // Show all blocks as compact preview
+        step.secciones.forEach(sec=>{
+          (sec.bloques||[]).forEach(b=>{
+            html += renderInstrBlock(b);
+          });
+        });
+      }
+    }
+
+    html += '<button class="step-next-btn" onclick="completeStep('+idx+')" id="next-btn-'+idx+'">';
+    html += done ? '↩ Desmarcar' : '✓ Completar paso →';
+    html += '</button>';
+    html += '</div></div>';
+  });
+  steps.innerHTML = html;
+}
+
+function toggleStep(idx){
+  const body = document.getElementById('step-body-'+idx);
+  const card = document.getElementById('step-card-'+idx);
+  const ch = card.querySelector('.step-chevron');
+  const hidden = body.style.display==='none';
+  body.style.display = hidden?'':'none';
+  card.classList.toggle('collapsed', !hidden);
+  if(!hidden) return; // was open, now closing - done
+  activeStep = idx;
+  document.querySelectorAll('.step-num').forEach((el,i)=>{
+    el.className = 'step-num '+(stepDone[i]?'sn-done':i===idx?'sn-active':'sn-default');
+  });
+  renderRightPanel(DB.causas.find(x=>x.id===activeCausaId));
+}
+
+function completeStep(idx){
+  stepDone[idx] = !stepDone[idx];
+  const nextIdx = Object.keys(DB.estructura).map(Number).find(i=>i>idx&&!stepDone[i]) ?? idx+1;
+  if(!stepDone[idx]){
+    activeStep = idx;
+  } else {
+    activeStep = Math.min(nextIdx, DB.estructura.length-1);
+  }
+  renderFlow();
+  // Scroll to next step
+  setTimeout(()=>{
+    const el = document.getElementById('step-card-'+activeStep);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  },100);
+}
+
+function refreshScripts(){
+  if(!activeCausaId) return;
+  const causa = DB.causas.find(x=>x.id===activeCausaId);
+  if(causa) renderRightPanel(causa);
+}
+
+// ── RIGHT PANEL ──
+function rightStepLabel(idx, titulo, isCausa){
+  const done = !!stepDone[idx];
+  const isActive = idx===activeStep;
+  const numClass = done?'done':'';
+  const tit = isCausa ? 'Script de causa' : titulo.split('\n')[0].trim();
+  return '<div class="right-step-label">'
+    +'<div class="rsl-num '+numClass+'">'+(done?'✓':(idx+1))+'</div>'
+    +'<span class="rsl-title">'+esc(tit)+'</span>'
+    +'</div>';
+}
+function scriptPlaceholder(msg){
+  return '<div style="padding:10px 12px;background:var(--surf2);border-radius:var(--r2);font-size:12px;color:var(--txt3);border:1px dashed var(--border2)">'+esc(msg)+'</div>';
+}
+
+function renderRightPanel(causa){
+  const stream = document.getElementById('script-stream');
+  let html = '';
+
+  DB.estructura.forEach((step, idx)=>{
+    html += rightStepLabel(idx, step.titulo, idx===STEP_CAUSA_IDX&&causa.tipo==='Reclamo');
+
+    if(idx === STEP_CAUSA_IDX){
+      if(causa.tiene_wizard){
+        const prog = wizProgress[activeCausaId];
+        if(prog){
+          const last = prog.history[prog.history.length-1];
+          if(last && last.startsWith('resultado_')){
+            const res = causa.wizard.resultados[last];
+            if(res){
+              const txt = applyVars(res.script||'');
+              html += '<div class="blk-client"><div class="blk-client-lbl">&#128172; Script cliente'
+                +'<button class="copy-btn" onclick="copyNearest(this)">Copiar</button></div>'
+                +'<div class="blk-client-txt blk-copyable">'+esc(txt)+'</div></div>';
+            }
+          } else {
+            html += scriptPlaceholder('Responde las condiciones en el panel izquierdo →');
+          }
+        }
+      } else {
+        causa.script_secciones.forEach(sec=>{
+          if(sec.condicion) html += '<div class="cond-hdr"><span class="cond-tag">CONDICIÓN</span>'+esc(sec.condicion)+'</div>';
+          (sec.bloques||[]).forEach(b=>{ html += renderClientBlock(b); });
+        });
+      }
+    } else {
+      step.secciones.forEach(sec=>{
+        if(sec.condicion) html += '<div class="cond-hdr"><span class="cond-tag">CONDICIÓN</span>'+esc(sec.condicion)+'</div>';
+        (sec.bloques||[]).forEach(b=>{ html += renderClientBlock(b); });
+      });
+    }
+
+    if(idx < DB.estructura.length-1) html += '<div class="right-divider"></div>';
+  });
+
+  stream.innerHTML = html;
+}
+
+function renderResultBlocks(res){
+  let h = '<div class="blk-instr"><div class="blk-instr-lbl">&#9999; Instrucción ejecutivo'
+    +'<button class="copy-btn" onclick="copyWizText(this,0)">Copiar</button></div>'
+    +'<div class="blk-instr-txt" data-wiz-instr>'+esc(applyVars(res.instruccion||''))+'</div></div>';
+  h += '<div class="blk-client"><div class="blk-client-lbl">&#128172; Script cliente'
+    +'<button class="copy-btn" onclick="copyWizText(this,1)">Copiar</button></div>'
+    +'<div class="blk-client-txt" data-wiz-script>'+esc(applyVars(res.script||''))+'</div></div>';
+  return h;
+}
+
+// ── WIZARD (left panel) ──
+function renderWizLeft(causa){
+  const wiz = causa.wizard;
+  const cid = causa.id;
+  if(!wizProgress[cid]) wizProgress[cid]={answers:{},history:['paso_aplica_gl']};
+  const prog = wizProgress[cid];
+  let html = '<div class="wiz-wrap">';
+
+  for(let hi=0; hi<prog.history.length; hi++){
+    const stepId = prog.history[hi];
+    if(stepId.startsWith('resultado_')){
+      const res = wiz.resultados[stepId];
+      if(res){
+        html += '<div style="font-size:12px;font-weight:600;color:var(--green);padding:6px 0">✓ '+esc(res.titulo)+'</div>';
+        html += '<button class="wiz-reset" data-cid="'+(cid)+'" onclick="resetWizard(this.dataset.cid)">↺ Reiniciar evaluación</button>';
+      }
+      break;
+    }
+    const step = wiz.pasos.find(p=>p.id===stepId);
+    if(!step) break;
+    const answered = prog.answers[stepId];
+    const isLast = hi===prog.history.length-1;
+
+    if(hi>0) html += '<div class="wiz-step-sep"></div>';
+
+    if(answered!==undefined && !isLast){
+      html += '<div class="wiz-step-done">✓ '+esc(step.pregunta.substring(0,40))+': <strong>'+esc(step.opciones[answered].label)+'</strong></div>';
+    } else {
+      html += '<div class="wiz-step-q">'+esc(step.pregunta)+'</div>';
+      if(step.ayuda) html += '<div class="wiz-ayuda">'+esc(step.ayuda)+'</div>';
+      html += '<div class="wiz-opts">';
+      step.opciones.forEach(function(opt,oi){
+        const sel = answered===oi?' sel':'';
+        html += '<button class="wiz-opt'+sel+'" data-cid="'+(cid)+'" data-step="'+(stepId)+'" data-oi="'+(oi)+'" data-next="'+(opt.siguiente)+'" onclick="selWizOpt(this)">'+esc(opt.label)+'</button>';
+      });
+      html += '</div>';
+    }
+  }
+  html += '</div>';
+  return html;
+}
+
+function selWizOpt(el){
+  const cid = el.dataset.cid;
+  const stepId = el.dataset.step;
+  const oi = parseInt(el.dataset.oi);
+  const next = el.dataset.next;
+  if(!wizProgress[cid]) wizProgress[cid]={answers:{},history:[stepId]};
+  const prog = wizProgress[cid];
+  prog.answers[stepId] = oi;
+  const idx = prog.history.indexOf(stepId);
+  prog.history = prog.history.slice(0,idx+1);
+  prog.history.push(next);
+  renderFlow();
+}
+
+function resetWizard(cid){
+  wizProgress[cid] = {answers:{},history:['paso_aplica_gl']};
+  renderFlow();
+}
+
+function renderCondLeft(secciones, cid){
+  const hasConds = secciones.some(s=>s.condicion);
+  if(!hasConds) return '<div class="step-causa-placeholder" style="text-align:left;font-size:12px">Scripts cargados en el panel derecho →</div>';
+  let html = '<div class="wiz-opts">';
+  secciones.filter(s=>s.condicion).forEach((sec,i)=>{
+    html += '<div style="font-size:11px;padding:5px 10px;background:var(--surf2);border-radius:var(--r2);color:var(--txt2);border:1px solid var(--border)">'+esc(sec.condicion)+'</div>';
+  });
+  html += '</div><div style="font-size:11px;color:var(--txt3);margin-top:6px">Ver scripts completos en el panel derecho →</div>';
+  return html;
+}
+
+// ── SUPERVISOR TABLE ──
+function renderSupTable(q){
+  const qt=(q||'').toLowerCase().trim();
+  const filtered=DB.causas.filter(c=>!qt||(c.causa_reclamo+c.familia+c.subfamilia).toLowerCase().includes(qt));
+  const el=document.getElementById('sup-table-wrap');
+  if(!filtered.length){el.innerHTML='<div class="empty">Sin resultados</div>';return;}
+  let h='<table class="sup-table"><thead><tr><th>N°</th><th>Familia</th><th>Causa</th><th>Tipo</th><th>Tip.</th><th></th></tr></thead><tbody>';
+  filtered.forEach(c=>{
+    const tb={'Reclamo':'cb-Reclamo','Solicitud':'cb-Solicitud','Consulta':'cb-Consulta','Sugerencia':'cb-Sugerencia','Felicitación':'cb-Felicitacion'}[c.tipo]||'cb-Consulta';
+    h+='<tr><td style="color:var(--txt3);width:40px">'+esc(c.numero)+'</td>'
+      +'<td style="max-width:160px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px">'+esc(c.familia)+'</div><div style="font-size:11px;color:var(--txt3)">'+esc(c.subfamilia)+'</div></td>'
+      +'<td><strong>'+esc(c.causa_reclamo)+'</strong></td>'
+      +'<td><span class="causa-badge '+tb+'">'+c.tipo+'</span></td>'
+      +'<td style="font-family:monospace;color:var(--blue);font-size:12px">'+esc(c.tipificacion)+'</td>'
+      +'<td><div class="row-acts"><button class="ia" data-eid="'+(c.id)+'" onclick="editCausa(this.dataset.eid)" title="Editar">✎</button><button class="ia" data-did="'+(c.id)+'" data-dname="'+(esc(c.causa_reclamo))+'" onclick="askDel(this.dataset.did,this.dataset.dname)" title="Eliminar" style="color:var(--red)">✕</button></div></td>'
+      +'</tr>';
+  });
+  h+='</tbody></table>';
+  el.innerHTML=h;
+}
+
+// ── MODAL ──
+function openModal(){
+  editId=null;
+  document.getElementById('modal-h').textContent='Nueva causa';
+  ['m-num','m-fam','m-sub','m-causa','m-aplica','m-tip','m-ficha','m-proceso','m-script'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('modal').classList.add('open');
+}
+function editCausa(id){
+  editId=id;
+  const c=DB.causas.find(x=>x.id===id);
+  if(!c)return;
+  document.getElementById('modal-h').textContent='Editar causa';
+  document.getElementById('m-num').value=c.numero||'';
+  document.getElementById('m-fam').value=c.familia||'';
+  document.getElementById('m-sub').value=c.subfamilia||'';
+  document.getElementById('m-causa').value=c.causa_reclamo||'';
+  document.getElementById('m-aplica').value=c.cuando_aplica||'';
+  document.getElementById('m-tip').value=c.tipificacion||'';
+  document.getElementById('m-ficha').value=c.manual_ficha||'';
+  document.getElementById('m-proceso').value=c.proceso_resolucion||'';
+  document.getElementById('m-tipo').value=c.tipo||'Reclamo';
+  // For script, reconstruct from secciones
+  document.getElementById('m-script').value = reconstructScript(c.script_secciones);
+  document.getElementById('modal').classList.add('open');
+}
+function reconstructScript(secciones){
+  if(!secciones) return '';
+  return secciones.map(sec=>{
+    let txt = '';
+    if(sec.condicion) txt += sec.condicion+'\n';
+    (sec.bloques||[]).forEach(b=>{
+      if(b.tipo==='instruccion_ejecutivo') txt += 'Indicación para el ejecutivo: '+b.texto+'\n';
+      else txt += b.texto+'\n';
+    });
+    return txt;
+  }).join('\n');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+
+
+
+
+function saveModal(){
+  const causa=document.getElementById('m-causa').value.trim();
+  if(!causa){alert('El nombre de la causa es obligatorio');return;}
+  const script=document.getElementById('m-script').value;
+  const proceso=document.getElementById('m-proceso').value;
+  const newC={
+    id:editId||'c_'+Date.now(),
+    numero:document.getElementById('m-num').value.trim(),
+    familia:document.getElementById('m-fam').value.trim(),
+    subfamilia:document.getElementById('m-sub').value.trim(),
+    causa_reclamo:causa,
+    cuando_aplica:document.getElementById('m-aplica').value.trim(),
+    tipo:document.getElementById('m-tipo').value,
+    tipificacion:document.getElementById('m-tip').value.trim(),
+    manual_ficha:document.getElementById('m-ficha').value.trim(),
+    proceso_resolucion:proceso,
+    proceso_secciones:parseScript(proceso),
+    script_secciones:parseScript(script),
+    tiene_condiciones:parseScript(script).some(s=>s.condicion),
+    tiene_wizard:false,
+    requiere_numero_compra:/n[°º]\s*de\s*(orden|pedido|compra)/i.test(script+proceso),
+    sistemas:['HOLA','Excalibur','SOD','CATEX','MKTP','Mi Club','LiderApp','Marketplace'].filter(s=>script.toLowerCase().includes(s.toLowerCase())||proceso.toLowerCase().includes(s.toLowerCase()))
+  };
+  if(editId){const idx=DB.causas.findIndex(x=>x.id===editId);if(idx>-1)DB.causas[idx]=newC;}
+  else DB.causas.push(newC);
+  persistDB();
+  closeModal();
+  renderSupTable(document.getElementById('sup-q').value);
+  if(activeCausaId === (editId||newC.id)) renderFlow();
+}
+function askDel(id,nombre){
+  delId=id;
+  document.getElementById('del-msg').textContent='¿Eliminar "'+nombre+'"? Esta acción no se puede deshacer.';
+  document.getElementById('del-modal').classList.add('open');
+}
+function confirmDel(){
+  DB.causas=DB.causas.filter(c=>c.id!==delId);
+  persistDB();
+  document.getElementById('del-modal').classList.remove('open');
+  renderSupTable(document.getElementById('sup-q').value);
+}
+
+// ── PARSER (for supervisor edits) ──
+function parseBlocks(text){
+  if(!text||!text.trim()) return [];
+  const blocks=[];
+  const parts=text.split(/Indicaci[oó]n para el ejecutivo\s*:*/i);
+  let cur=parts[0]||'';
+  if(cur.trim()) blocks.push({tipo:'script_cliente',texto:cur.trim()});
+  for(let i=1;i<parts.length;i++){
+    const lines=parts[i].split('\n');
+    const il=[],cl=[];let fc=false;
+    for(const ln of lines){
+      const s=ln.trim();
+      if(!fc&&il.length&&s&&(/^(Te comento|Comprendo|Entiendo|Gracias|Hola|Espero|¿|\(Nombre)/.test(s)||/[🤝🙌💻👉🤔✅🖥️😊😀📲💳📝]/.test(s))) fc=true;
+      (fc?cl:il).push(ln);
+    }
+    const instr=il.join('\n').trim();const cli=cl.join('\n').trim();
+    if(instr) blocks.push({tipo:'instruccion_ejecutivo',texto:instr});
+    if(cli) blocks.push({tipo:'script_cliente',texto:cli});
+  }
+  return blocks;
+}
+function parseScript(text){
+  if(!text||!text.trim()) return [];
+  const lines=text.split('\n');const sections=[];let curH=null,curLines=[];
+  for(const ln of lines){
+    const s=ln.trim();
+    const isCond=s&&(
+      /^\*(?:Monto|monto|Aplica|No Aplica|Alerta|Si el monto)[^\n]*/.test(s)||
+      /^(?:Dentro|Fuera) de plazo/.test(s)||
+      /^(?:SI|NO)\s+(?:hay|se pudo|existe|aparece|cuenta)/.test(s)||
+      /^[•]\s*[A-ZÁÉÍÓÚ].{5,}:/.test(s)||
+      /^(?:COMPRAS?\s+(?:SOD|CATEX|MKTP)|DEVOLUCIÓN OK|ESTADO DEVOLUCIÓN|NO APLICA|NO EXISTE)/.test(s)||
+      /^(SOD|CATEX|MKTP|MKP):$/.test(s)
+    );
+    if(isCond){if(curLines.length||curH)sections.push({condicion:curH,bloques:parseBlocks(curLines.join('\n'))});curH=s;curLines=[];}
+    else curLines.push(ln);
+  }
+  if(curLines.length||curH)sections.push({condicion:curH,bloques:parseBlocks(curLines.join('\n'))});
+  return sections.length?sections:[{condicion:null,bloques:parseBlocks(text)}];
+}
+
+// ── INIT ──
+showView('main');
+loadFromSharePoint();
+</script>
+</body>
+</html>
